@@ -11,11 +11,18 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.BottomAppBar
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -40,6 +47,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -50,6 +58,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.InspectableModifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -95,15 +104,26 @@ fun Content(modifier: Modifier = Modifier) {
         }
         Column(
             modifier = modifier
-                .fillMaxSize()
                 .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+
         ) {
-            ServerCard()
-            ServerCard()
-            ServerCard()
+            Column() {
+                ServerCard()
+                ServerCard()
+                ServerCard()
+                ServerCard()
+                ServerCard()
+                ServerCard()
+                ServerCard()
+                ServerCard()
+                ServerCard()
+                ServerCard()
+            }
         }
     }
 }
+
 @Composable
 fun WelcomeScreen(topText: String, modifier: Modifier = Modifier) {
     Scaffold(
@@ -128,8 +148,10 @@ fun WelcomeScreen(topText: String, modifier: Modifier = Modifier) {
                 contentColor = Color.LightGray
             )
         },
-        content = { paddingValues -> Box(modifier = modifier.padding(paddingValues))
-            Content()
+        content = { paddingValues ->
+            Box(modifier = modifier.padding(bottom = 150.dp)) {
+                Content()
+            }
         },
 //      bottomBar = { BottomAppBar(
 //                backgroundColor = Color(49,62,79),
@@ -143,10 +165,10 @@ fun WelcomeScreen(topText: String, modifier: Modifier = Modifier) {
         bottomBar = { BottomBar()},
         floatingActionButton = {
             Surface(
-                elevation = 10.dp,
+                elevation = 4.dp,
                 shape = CircleShape,
                 color = Color.Black,
-                border = BorderStroke(0.001.dp, Color.Black)
+                border = BorderStroke(0.1.dp, Color.Black)
             ) {
                 FloatingActionButton(
                     contentColor = Color.White,
@@ -214,29 +236,94 @@ fun AddNewServerButton(){
         // Screen content
     }
 }
+//@Composable
+//fun ServerCard(modifier: Modifier = Modifier){
+//    Card(backgroundColor = Color.Green,
+//         modifier = modifier
+//             .fillMaxWidth()
+//             .padding(5.dp))
+//    {
+//        Row(modifier = modifier.padding(5.dp)){
+//            Column() {
+//                Text(text = "Sever 11111111111", modifier = modifier.padding(start = 5.dp))
+//                Text(text = "Status: Active", modifier = modifier.padding(start = 5.dp), fontSize = 14.sp)
+//                Text(text = "Type: MySQL", modifier = modifier.padding(start = 5.dp), fontSize = 14.sp)
+//            }
+//            Row(horizontalArrangement = Arrangement.End,
+//                modifier = Modifier.fillMaxWidth()) {
+//                Icon(
+//                    modifier = modifier.padding(vertical = 10.dp),
+//                    imageVector = Icons.Default.Edit,
+//                    contentDescription = "null"
+//                )
+//                Icon(
+//                    imageVector = Icons.Default.Delete,
+//                    contentDescription = "null"
+//                )
+//            }
+//        }
+//    }
+//}
+//@Composable
+//fun ServerCard(modifier: Modifier = Modifier){
+//    Card(backgroundColor = Color.Green,
+//         modifier = modifier
+//             .fillMaxWidth()
+//             .padding(5.dp))
+//    {
+//        Row(modifier = modifier.padding(5.dp).fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween){
+//            Column() {
+//                Text(text = "Sever 11111111111", modifier = modifier.padding(start = 5.dp))
+//                Text(text = "Status: Active", modifier = modifier.padding(start = 5.dp), fontSize = 14.sp)
+//                Text(text = "Type: MySQL", modifier = modifier.padding(start = 5.dp), fontSize = 14.sp)
+//            }
+//            IconButton(
+//                onClick = { /* Perform your action here */ },
+//                modifier = Modifier.fillMaxWidth().align(Alignment.CenterVertically)
+//                ) {
+//                    Icon(
+//                    imageVector = Icons.Default.MoreVert,
+//                    contentDescription = "More"
+//                )
+//            }
+//        }
+//    }
+//}
 @Composable
 fun ServerCard(modifier: Modifier = Modifier){
-    Card(backgroundColor = Color.Green,
-         modifier = modifier
-             .fillMaxWidth()
-             .padding(5.dp))
+    Card(backgroundColor = Color.White,
+//        border = BorderStroke(1.dp, Color.Black),
+        modifier = modifier
+            .fillMaxWidth()
+//            .padding(horizontal = 5.dp))
+        )
     {
-        Row(modifier = modifier.padding(5.dp)){
-            Column() {
-                Text(text = "Sever 11111111111", modifier = modifier.padding(start = 5.dp))
-                Text(text = "Status: Active", modifier = modifier.padding(start = 5.dp), fontSize = 14.sp)
-                Text(text = "Type: MySQL", modifier = modifier.padding(start = 5.dp), fontSize = 14.sp)
+        Row(modifier = modifier
+            .padding(5.dp)
+            .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Column(horizontalAlignment = Alignment.Start, verticalArrangement = Arrangement.Center) {
+                Text(text = "Sever 11111111111", modifier = modifier.padding(start = 5.dp), fontWeight = FontWeight.Medium)
+                Text(text = "Status: Active", modifier = modifier.padding(start = 5.dp), fontSize = 14.sp, color = Color.Gray)
+                Text(text = "Type: MySQL", modifier = modifier.padding(start = 5.dp), fontSize = 14.sp, color = Color.Gray)
             }
-            Row(horizontalArrangement = Arrangement.End,
-                modifier = Modifier.fillMaxWidth()) {
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = "null"
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                IconButton(
+                    onClick = { /* Perform your action here */ }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "More"
+                    )
+                }
+                IconButton(onClick = { /*TODO*/ }
                 )
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "null"
-                )
+                   {
+                    Icon(
+                        imageVector = Icons.Default.PlayArrow,
+                        contentDescription = "Execute script"
+                    )
+                }
             }
         }
     }
