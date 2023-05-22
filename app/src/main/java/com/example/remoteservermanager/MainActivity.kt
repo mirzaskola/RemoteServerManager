@@ -1,32 +1,30 @@
 package com.example.remoteservermanager
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.BottomAppBar
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Card
+import androidx.compose.material.Divider
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.FabPosition
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
@@ -38,28 +36,25 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.InspectableModifier
-import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -67,6 +62,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.remoteservermanager.ui.theme.RemoteServerManagerTheme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -119,6 +115,10 @@ fun Content(modifier: Modifier = Modifier) {
                 ServerCard()
                 ServerCard()
                 ServerCard()
+                ServerCard()
+                ServerCard()
+                ServerCard()
+                ServerCard()
             }
         }
     }
@@ -126,27 +126,19 @@ fun Content(modifier: Modifier = Modifier) {
 
 @Composable
 fun WelcomeScreen(topText: String, modifier: Modifier = Modifier) {
+    val scaffoldState = rememberScaffoldState()
+    val scope = rememberCoroutineScope()
     Scaffold(
+        scaffoldState = scaffoldState,
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = topText,
-                        textAlign = TextAlign.Center,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Normal
-                        )
-                },
-                navigationIcon = {
-                    IconButton(
-
-                        onClick = { /* Handle navigation menu click here */ }) {
-                        Icon(Icons.Default.Menu, contentDescription = "Menu")
-                    }
-                },
-                backgroundColor = Color(49,62,79),
-                contentColor = Color.LightGray
-            )
+            TopBar(topText = "Remote Server Manager", onNavigationIconClick = {
+                scope.launch {
+                    scaffoldState.drawerState.open()
+                }
+            })
+        },
+        drawerContent = {
+                        MenuDrawer()
         },
         content = { paddingValues ->
             Box(modifier = modifier.padding(bottom = 150.dp)) {
@@ -197,6 +189,28 @@ fun WelcomeScreen(topText: String, modifier: Modifier = Modifier) {
 
     )
 
+}
+@Composable
+fun TopBar(topText: String, onNavigationIconClick: () -> Unit){
+    TopAppBar(
+        title = {
+            Text(
+                text = topText,
+                textAlign = TextAlign.Center,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Normal
+            )
+        },
+        navigationIcon = {
+            IconButton(
+                onClick = onNavigationIconClick) {
+                Icon(Icons.Default.Menu, contentDescription = "Menu")
+            }
+        },
+
+        backgroundColor = Color(49,62,79),
+        contentColor = Color.LightGray
+    )
 }
 @Composable
 fun BottomBar() {
@@ -291,6 +305,9 @@ fun AddNewServerButton(){
 //}
 @Composable
 fun ServerCard(modifier: Modifier = Modifier){
+    var showMenu by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
     Card(backgroundColor = Color.White,
 //        border = BorderStroke(1.dp, Color.Black),
         modifier = modifier
@@ -298,6 +315,7 @@ fun ServerCard(modifier: Modifier = Modifier){
 //            .padding(horizontal = 5.dp))
         )
     {
+        Divider()
         Row(modifier = modifier
             .padding(5.dp)
             .fillMaxWidth(),
@@ -309,12 +327,23 @@ fun ServerCard(modifier: Modifier = Modifier){
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(
-                    onClick = { /* Perform your action here */ }
+                    onClick = { showMenu = !showMenu}
                 ) {
                     Icon(
                         imageVector = Icons.Default.MoreVert,
                         contentDescription = "More"
                     )
+                    DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false} ) {
+                        DropdownMenuItem(onClick = {}) {
+                            Text(text = "Start")
+                        }
+                        DropdownMenuItem(onClick = {}) {
+                            Text(text = "Stop")
+                        }
+                        DropdownMenuItem(onClick = {}) {
+                            Text(text = "Manage")
+                        }
+                    }
                 }
                 IconButton(onClick = { /*TODO*/ }
                 )
@@ -325,9 +354,67 @@ fun ServerCard(modifier: Modifier = Modifier){
                     )
                 }
             }
+
         }
+        Divider()
     }
 }
+@Composable
+fun MenuDrawer(){
+    Column(){
+        MenuDrawerHeader()
+        MenuDrawerContent(items = listOf(
+                                MenuItem(
+                                id = "settings",
+                                title = "Settings",
+                                contentDescription = "Settings button",
+                                icon = Icons.Default.Settings
+                                ),
+                                MenuItem(
+                                id = "info",
+                                title = "Info",
+                                contentDescription = "Info button",
+                                icon = Icons.Default.Info
+                                ),
+                          ),
+                          onItemCLick = {/*Ovdje navigaciju konfigurisati sa when: it.id="nesto" -> navigateToblabla*/})
+    }
+}
+@Composable
+fun MenuDrawerHeader(){
+    val logo = painterResource(id = R.drawable.main_logo)
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(10.dp)){
+        Image(painter = logo, contentDescription = "App logo")
+        Text(text = "Remote Server Manager", fontSize = 14.sp, color = Color.Gray)
+//        Divider(Modifier.padding(vertical = 5.dp))
+    }
+
+}
+@Composable
+fun MenuDrawerContent(items: List<MenuItem>, modifier: Modifier = Modifier, onItemCLick: (MenuItem) -> Unit){
+    LazyColumn(
+        modifier
+            .fillMaxSize()
+            ) {
+        items(items){ item ->
+            Row(modifier = modifier
+                .clickable { onItemCLick(item) }
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp, vertical = 10.dp)) {
+                Icon(imageVector = item.icon, contentDescription = item.contentDescription)
+                Text(text = item.title, modifier = modifier
+                    .weight(1f)
+                    .padding(horizontal = 8.dp))
+            }
+            Divider(modifier = modifier.padding(horizontal = 16.dp))
+        }
+    }
+
+}
+
+
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {

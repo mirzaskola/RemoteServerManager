@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">RemoteServerManager</string>
+    <string name="title">Remote Server Manager</string>
+    <string name="manage_button">Manage</string>
+    <string name="start_button">Start</string>
+    <string name="stop_button">Stop</string>
+    <string name="ras_button">Run a script</string>
+    <string name="info_button">Info</string>
 </resources>
