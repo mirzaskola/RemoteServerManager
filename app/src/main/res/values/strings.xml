@@ -6,4 +6,5 @@
     <string name="stop_button">Stop</string>
     <string name="ras_button">Run a script</string>
     <string name="info_button">Info</string>
+    <string name="title_activity_server">ServerActivity</string>
 </resources>
