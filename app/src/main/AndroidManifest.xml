@@ -12,6 +12,21 @@
         android:theme="@style/Theme.RemoteServerManager"
         tools:targetApi="31">
         <activity
+            android:name=".AlertsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_alerts"
+            android:theme="@style/Theme.RemoteServerManager" />
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false"
+            android:label="@string/title_activity_profile"
+            android:theme="@style/Theme.RemoteServerManager" />
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false"
+            android:label="@string/title_activity_login"
+            android:theme="@style/Theme.RemoteServerManager" />
+        <activity
             android:name=".ServerActivity"
             android:exported="false"
             android:label="@string/title_activity_server"
